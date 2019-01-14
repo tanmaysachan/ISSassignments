@@ -72,8 +72,14 @@ delete() {
 			if [[ "$c" == [yY] || "$c" == [yY][eE][sS] ]]; then
 				printf "\n"
 				echo "Deleting..."
-				cat ~/SongDiary/cache | grep -v "$line" ~/SongDiary/cache > ~/SongDiary/cache2
-				mv ~/SongDiary/cache2 ~/SongDiary/cache
+				echo "$line"
+				
+				#single command used for deletion (sed)
+
+				sed -i "/${line}/d" ~/SongDiary/cache
+
+				#######################################
+				
 				delete_successful=1
 				printf "Done!\n"
 			else
