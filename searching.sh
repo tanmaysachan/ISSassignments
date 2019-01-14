@@ -10,7 +10,6 @@ print_usage() {
 }
 
 if [[ $# == 0 ]]; then
-
 	printf "A simple bash script to count the occurrences of\n"
 	printf "a pattern in the source of a web page!\n"
 	printf "\nUse the -h flag for help.\n"
