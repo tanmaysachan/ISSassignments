@@ -1,7 +1,10 @@
 #!/bin/bash
 
 if [ $# -eq 0 ]; then
-	echo "Use -h flag for help"
+	echo "Welcome to the Song Diary!"
+	echo "A tool to keep track of your songs."
+	echo
+	echo "Use the -h flag for help"
 	exit 1
 fi
 
