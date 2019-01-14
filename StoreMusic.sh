@@ -200,6 +200,12 @@ edit_song() {
 		read -p "Artist: " artist
 		read -p "Genre: " genre
 		read -p "YT link: " yt_link
+		if [[ "$song_name" == "" ]]; then
+			printf "\n\n"
+			echo "Song name not specified"
+			echo "Aborting..."
+			exit 1
+		fi
 	else
 		exit 1
 	fi
