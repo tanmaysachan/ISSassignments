@@ -5,6 +5,8 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
+# global vars
+
 song_name="NULL"
 song_name_orig=""
 artist=""
@@ -17,12 +19,16 @@ searched_song="NULL"
 search_count=0
 header="|----Song-name----||-----artist------||------genre------||-----yt_link-----"
 delete_successful=0
+
+#############
+
 if [[ ! -e ~/SongDiary/cache ]]; then
 	mkdir -p ~/SongDiary
 	touch ~/SongDiary/cache
 fi
 
 # functions declarations go here
+
 print_usage() {
 	printf "Usage -s flag for adding the song name\n"
 	printf "           (mandatory for adding songs)\n"
@@ -72,7 +78,6 @@ delete() {
 			if [[ "$c" == [yY] || "$c" == [yY][eE][sS] ]]; then
 				printf "\n"
 				echo "Deleting..."
-				echo "$line"
 				
 				#single command used for deletion (sed)
 
@@ -220,6 +225,7 @@ edit_song() {
 # function declarations end here
 
 # handling flags
+
 while getopts 'ls:a:g:y:hDd:S:e:' flag; do
 	case "${flag}" in
 		l) list_all_songs; exit;;
@@ -234,6 +240,8 @@ while getopts 'ls:a:g:y:hDd:S:e:' flag; do
 		h) print_usage; exit;;
 	esac
 done
+
+################
 
 if [[ ${song_name} == "NULL" ]]; then
 	echo "Use -s {song-name} flag for the song name"
@@ -257,7 +265,8 @@ else
 	exit 1
 fi
 
-#appending song to cache
+# appending song to cache
+
 echo "${song_name_orig},${artist_orig},${genre_orig},${yt_link_orig}" >> ~/SongDiary/cache
 
 printf "\n"
@@ -268,8 +277,9 @@ printf "Artist:       ${artist}   \n"
 printf "Genre:        ${genre}    \n"
 printf "Youtube link: ${yt_link}  \n"
 
-#updating list
+# updating list
+
 update_list 0
 
-printf "\nSong added successfully\n"
+printf "\nSong added successfully!\n"
 exit 0
