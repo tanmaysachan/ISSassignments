@@ -42,6 +42,8 @@ fi
 
 text=$(curl -sL --fail "$url")
 
+printf "${text}\n"
+
 count=$(echo "$text" | grep -c "$pattern")
 
 printf "${pattern} ${count}\n"
