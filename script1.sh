@@ -10,16 +10,25 @@ if [[ ! -e 2018111023.txt ]]; then
 	touch "2018111023.txt"
 fi
 
-for file in /usr/bin/*; do
-	doced_file="$(echo $file | cut -d "/" -f 4)"
-	if [[ $doced_file == lo* ]]; then
-		char_count_file_name="$(echo "$doced_file" | wc -c)"
-		if [ "$maxLineLength" -lt "$char_count_file_name" ]; then
-			maxLineLength="$char_count_file_name"
-		fi
-		printf "${doced_file}\n" >> 2018111023.txt
+coms="$(compgen -c "lo")"
+echo "$coms" > 2018111023.txt
+
+while read -r line || [[ -n "$line" ]]; do
+	char_count="$(echo "${line}" | wc -c)"
+	if [[ "$maxLineLength" < "$char_count" ]]; then
+		maxLineLength="$char_count"
 	fi
-done
+done < 2018111023.txt
+# for file in /usr/bin/*; do
+# 	doced_file="$(echo $file | cut -d "/" -f 4)"
+# 	if [[ $doced_file == lo* ]]; then
+# 		char_count_file_name="$(echo "$doced_file" | wc -c)"
+# 		if [ "$maxLineLength" -lt "$char_count_file_name" ]; then
+# 			maxLineLength="$char_count_file_name"
+# 		fi
+# 		printf "${doced_file}\n" >> 2018111023.txt
+# 	fi
+# done
 
 echo "Max Line Length: ${maxLineLength}"
 echo "Line count: $(wc -l 2018111023.txt | cut -d " " -f 1)"
