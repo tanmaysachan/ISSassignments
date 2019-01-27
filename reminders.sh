@@ -86,7 +86,6 @@ edit_reminder() {
 	read -p "Enter its new value: " new_val
 	delete_reminder "$tid"
 	arr["$field"]="$new_val"
-	echo ${arr["$field"]}
 	echo "${arr[0]},${arr[1]},${arr[2]}" >> ~/Reminders/cache
 	fix_ids
 	echo "Reminder successfully edited"
@@ -114,7 +113,7 @@ reset() {
 }
 
 run() {
-	echo "Running..."
+	echo "Process running in the background..."
 	while [[ "$(wc -l ~/Reminders/cache | cut -d" " -f1)" > 0 ]]; do
 		exec_note=$(grep -E "^1," ~/Reminders/cache)
 		IFS=',' read -r -a arr <<< "$exec_note"
@@ -135,7 +134,7 @@ run() {
 ## input handling goes here
 
 if [[ "$1" == "--run" || "$1" == "-r" ]]; then
-	run
+	run & disown
 	exit 0
 fi
 

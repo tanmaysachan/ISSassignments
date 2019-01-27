@@ -22,6 +22,7 @@ searched_song="NULL"
 search_count=0
 header="|----Song-name----||-----artist------||------genre------||-----yt_link-----"
 delete_successful=0
+id=0
 
 #############
 
@@ -40,7 +41,7 @@ print_usage() {
 	printf "      -y flag for adding the youtube link\n"
 	printf "      -l flag to list all existing songs\n"
 	printf "      -d flag for deleting a song, takes song name as argument\n"
-	printf "      -e flag for editing an entry, takes song name as argument\n"
+	printf "      -e flag for editing an entry, takes song ID as argument\n"
 	printf "      -S flag for searching, takes pattern as an argument\n"
 	printf "                  (returns all songs matching the pattern)\n"
 	printf "      -D flag for resetting the diary (warning: deletes all entries)\n"
@@ -49,6 +50,24 @@ print_usage() {
 	printf "\nExample usage:\n"
 	printf "./script.sh -s \"hello\" -a \"adele\" -g \"pop\" -y \"https://www.youtube.com/watch?v=YQHsXMglC9A\"\n"
 	printf "Adds the song Hello, by Adele to the diary\n"
+}
+
+gen_id() {
+	id=$(("$(wc -l ~/SongDiary/cache | cut -d" " -f 1)"+1))
+}
+
+fix_ids() {
+	touch ~/SongDiary/tmpcache
+	local tmp=0
+	while read -r line || [[ -n "$line" ]]; do
+		IFS=',' read -r -a arr <<< "$line"
+		tmp=$(($tmp+1))
+		if [[ "${arr[4]}" != "$tmp" ]]; then
+			arr[4]="$tmp"
+		fi
+		echo "${arr[0]},${arr[1]},${arr[2]},${arr[3]},${arr[4]}" >> ~/SongDiary/tmpcache	
+	done < ~/SongDiary/cache
+	mv ~/SongDiary/tmpcache ~/SongDiary/cache
 }
 
 reset_songs() {
@@ -74,7 +93,7 @@ delete() {
 		#echo "$line"
 		IFS=',' read -r -a arr <<< "$line"
 		#echo "${arr[0]}"
-		if [[ "${arr[0]}" =~ "$arg" ]]; then
+		if [[ "${arr[0]}" =~ "${arg}" ]]; then
 			flag=1
 			echo "***${arr[0]}***"
 			read -p "Delete this song? [y/N] " c </dev/tty
@@ -87,7 +106,6 @@ delete() {
 				sed -i "/${line}/d" ~/SongDiary/cache
 
 				#######################################
-				
 				delete_successful=1
 				printf "Done!\n"
 			else
@@ -98,6 +116,7 @@ delete() {
 	if [[ "$flag" == 0 ]]; then
 		echo "Song not found."
 	fi
+	fix_ids
 }
 
 update_list() {
@@ -108,6 +127,8 @@ update_list() {
 		artist=${arr[1]}
 		genre=${arr[2]}
 		yt_link=${arr[3]}
+		id=${arr[4]}
+		id_e="$id"
 		if [ ${#song_name} -gt 14 ]; then
 			song_name="|${song_name:0:14}...|"
 		else
@@ -139,11 +160,26 @@ update_list() {
 		fi
 
 		if [ "$tmp" -eq 1 ] && [ "$1" -eq 1 ]; then
-			echo "$header"
+			if [[ "$(($(wc -l ~/SongDiary/cache | cut -d" " -f1)))" -lt 10 ]]; then
+				echo "ID|${header}"
+			else
+				echo "ID|${header}"
+			fi
 			tmp=0
 		fi
+
+		if [[ "$(($(wc -l ~/SongDiary/cache | cut -d" " -f1)))" -lt 10 ]]; then
+			id_e=" ${id}|"		
+		else
+			if [ "$id" -lt 10 ]; then
+				id_e=" ${id}|"
+			else
+				id_e="${id}|"
+			fi
+		fi
+		
 		if [ "$1" -eq 1 ]; then
-			echo "${song_name}${artist}${genre}${yt_link}"
+			echo "${id_e}${song_name}${artist}${genre}${yt_link}"
 		fi
 	done < ~/SongDiary/cache
 }
@@ -173,7 +209,7 @@ search_songs() {
 					elem="NIL"
 				fi
 			done
-			echo "song-name: ${arr[0]}, artist: ${arr[1]}, genre: ${arr[2]}, yt_link: ${arr[3]}"
+			echo "id: ${arr[4]}, song-name: ${arr[0]}, artist: ${arr[1]}, genre: ${arr[2]}, yt_link: ${arr[3]}"
 		fi
 		IFS=',' read -r -a arr <<< "$line"
 		if [[ "${arr[0]}" == "$arg" ]] && [[ "$3" == 1 ]]; then
@@ -184,7 +220,7 @@ search_songs() {
 			searched_song="$line"
 			search_count=$(($search_count+1))
 			IFS=',' read -r -a arr <<< "$line"
-			echo "song-name: ${arr[0]}, artist: ${arr[1]}, genre: ${arr[2]}, yt_link: ${arr[3]}"
+			echo "id: ${arr[4]}, song-name: ${arr[0]}, artist: ${arr[1]}, genre: ${arr[2]}, yt_link: ${arr[3]}"
 		fi
 	done < ~/SongDiary/cache
 	if [ "$flag" -eq 0 ] && [ "$2" -eq 1 ]; then
@@ -194,40 +230,25 @@ search_songs() {
 
 edit_song() {
 	local arg="$1"
-	local flag=0
-	search_songs "$arg" 1 1
-	if [[ "$search_count" -gt 1 ]]; then
-		printf "\n"
-		echo "Argument not unique. Enter song name only."
-		exit 1
-	fi
-	if [[ "$searched_song" == "NULL" ]]; then
-		exit 0
-	fi
-	echo "Deleting record..."
-	IFS=',' read -r -a arr <<< "$searched_song"
-	delete "${arr[0]}"
-	if [[ "$delete_successful" == 1 ]]; then
-		printf "\n"
-		echo "Add altered record:"
-		read -p "Song name: " song_name
-		read -p "Artist: " artist
-		read -p "Genre: " genre
-		read -p "YT link: " yt_link
-		if [[ "$song_name" == "" ]]; then
-			printf "\n\n"
-			echo "Song name not specified"
-			echo "Aborting..."
-			exit 1
-		fi
-	else
-		exit 1
-	fi
+	read -p "Enter the field you want to edit(1, 2, 3, 4 for Song name, artist, genre, yt link
+	respectively): " field
+	read -p "Enter its new value: " new_val
+	field=$((field-1))
+	song=$(grep -E ",${arg}$" ~/SongDiary/cache)
+	IFS=',' read -r -a arr <<< "$song"
+	arr[$field]="$new_val"
+	sed -i "/,${arg}$/d" ~/SongDiary/cache
+	echo "${arr[0]},${arr[1]},${arr[2]},${arr[3]},${arr[4]}" >> ~/SongDiary/cache
+	fix_ids
+	echo "Song edited successfully"
+	exit 0
 }
 
 # function declarations end here
 
 # handling flags
+
+
 
 while getopts 'ls:a:g:y:hDd:S:e:' flag; do
 	case "${flag}" in
@@ -268,9 +289,11 @@ else
 	exit 1
 fi
 
+gen_id
+
 # appending song to cache
 
-echo "${song_name_orig},${artist_orig},${genre_orig},${yt_link_orig}" >> ~/SongDiary/cache
+echo "${song_name_orig},${artist_orig},${genre_orig},${yt_link_orig},${id}" >> ~/SongDiary/cache
 
 printf "\n"
 
