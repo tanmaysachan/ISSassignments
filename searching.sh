@@ -11,7 +11,7 @@ print_usage() {
 
 if [[ $# == 0 ]]; then
 	printf "A simple bash script to count the occurrences of\n"
-	printf "a pattern in the source of a web page!\n"
+	printf "a pattern in the body of a web page!\n"
 	printf "\nUse the -h flag for help.\n"
 	exit 0
 fi
@@ -42,8 +42,23 @@ fi
 
 text=$(curl -sL --fail "$url")
 
-printf "${text}\n"
 
-count=$(echo "$text" | grep -c "$pattern")
+# sed -i '/<script/,/<\/script>/d' tmp.txt
+
+if [[ ! -e tmp.txt ]]; then
+	touch tmp.txt
+fi
+echo "$text" > tmp.txt
+
+
+sed -i '/<script/,/<\/script>/d' tmp.txt
+sed -i '/<style/,/<\/style>/d' tmp.txt
+sed -i 's/<[^>]*>//g' tmp.txt
+
+# cat tmp.txt
+
+count=$(cat tmp.txt | grep -ic "$pattern")
+
+rm tmp.txt
 
 printf "${pattern} ${count}\n"
