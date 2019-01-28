@@ -35,8 +35,10 @@ take_break() {
 	sleep "${arg}m"
 }
 
-for i in $(seq 0 "$cycles"); do
+for i in $(seq 1 "$cycles"); do
+	printf "${i}# "
 	work 25
+	printf "${i}# "
 	if [[ "$i" != 0 && $(("$i"%4)) == 0 ]]; then
 		take_break 15
 	else
