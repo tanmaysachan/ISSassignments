@@ -22,5 +22,5 @@ done
 echo "Max Line Length: $(wc -L 2018111023.txt | cut -d " " -f 1)"
 echo "Line count: $(wc -l 2018111023.txt | cut -d " " -f 1)"
 
-sed -i -e "s/function/method/g" 2018111023.txt
+sed -i.bckp "s/function/method/g" 2018111023.txt
 
