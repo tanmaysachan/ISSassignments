@@ -1,28 +1,34 @@
-local
-logout
-loginctl
-lou_tableinfo
-logrotate
-logname
-logsave
-localectl
-lou_checktable
-login
-lou_debug
-lou_trace
-lou_translate
-locale
-lou_maketable
-locale-gen
-logger
-lou_allround
-look
-lookbib
-logresolve
-loadkeys
-lou_compare
-loadunimap
-localedef
-lou_checkhyphens
-losetup
-lowntfs-3g
+loadkeys: keyboard translation tables
+loadunimap: unicode-to-font mapping table
+locale: use or avoid POSIX locales for built-in operations
+- get locale-specific information
+get locale-specific information
+- describes a locale definition file
+- description of multilanguage support
+localectl: system locale and keyboard layout settings
+localedef: definition files
+locale-gen: 
+logger: - enter messages into the system log
+log messages
+login:  - write utmp and wtmp entries
+ - begin session on the system
+loginctl: the systemd login manager
+logname: print user's login name
+the user's login name
+logresolve: hostnames in Apache log files
+logrotate: and mails system logs
+logsave: save the output of a command in a logfile
+look:   - display lines beginning with a given string
+lookbib: search bibliographic databases
+losetup: set up and control loop devices
+lou_allround: liblouis library
+lou_checkhyphens: tables
+lou_checktable: 
+lou_compare: 
+lou_debug: for liblouis Braille translation tables
+lou_maketable: 
+lou_maketable.d: 
+lou_tableinfo: from a liblouis Braille translation table
+lou_trace: to list all the rules that were used for a Braille translation
+lou_translate: testing of liblouis Braille translation tables
+lowntfs-3g: 
