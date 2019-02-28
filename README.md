@@ -1,4 +1,7 @@
-# Q1
+# Bash scripts written for college assignment
+(Course: Intro to software systems)
+
+## Q1
 Use the -h flag with the script to see the usage of the flags.
 
 Use the -s flag to add a song(followed by a string, i.e. the song name),
@@ -31,7 +34,7 @@ Examples ->
 ./script.sh -S "Adele" # searches for songs which have Adele in their details
 
 
-# Q2
+## Q2
 
 Simple usage
 run ./script.sh "pattern_to_match" "url"
@@ -42,7 +45,7 @@ run ./script.sh "pattern_to_match" "url"
 run ./script.sh "cycles"
 the bonus version sends desktop notifications as well
 
-# Q4
+## Q4
 
 Run the script with the -h flag for help.
 Use the -a or --add-reminder flag to add a reminder. It expects two arguments in order.
@@ -57,12 +60,12 @@ of due reminders
 Use the --reset flag to reset the app, deleting all reminders
 
 
-# Q5
+## Q5
 
 Done as per the requirements.
 
 
-# Q6
+## Q6
 
 Run ./script.sh "movie_input_file_path" "all_movies_path"
 
