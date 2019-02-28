@@ -1,4 +1,4 @@
-# Bash scripts written for college assignment
+#### Bash scripts written for college assignment
 (Course: Intro to software systems)
 
 ## Q1
