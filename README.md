@@ -40,7 +40,7 @@ Simple usage
 run ./script.sh "pattern_to_match" "url"
 
 
-# Q3
+## Q3
 
 run ./script.sh "cycles"
 the bonus version sends desktop notifications as well
